@@ -1,0 +1,26 @@
+.messages {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.message {
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    width: 100%;
+}
+
+.text {
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #fff;
+}
+
+.user {
+    font-size: 14px;
+    color: rgb(176, 176, 176);
+    
+}
