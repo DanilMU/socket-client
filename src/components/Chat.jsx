@@ -9,7 +9,7 @@ import sendIcon from "../images/send.svg";
 import styles from "../styles/Chat.module.css";
 import Messages from "./Messages";
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://socket-server-6k9g.onrender.com", {
   autoConnect: false,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
