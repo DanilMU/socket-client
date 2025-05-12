@@ -1,20 +1,47 @@
 import React from "react";
-
 import styles from "../styles/Messages.module.css";
 
-const Messages = ({ messages, name }) => {
+const formatTime = (timestamp) => {
+  if (!timestamp) return "";
+  const date = new Date(timestamp);
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+};
+
+const Messages = ({ messages, currentUserId, onlineStatus }) => {
   return (
     <div className={styles.messages}>
-      {messages.map(({ user, message }, i) => {
-        const itsMe =
-          user.name.trim().toLowerCase() === name.trim().toLowerCase();
-        const className = itsMe ? styles.me : styles.user;
+      {messages.map(({ user, message, timestamp, type }, index) => {
+        const isCurrentUser = user.id === currentUserId;
+        const isSystem = type === "system";
+        
+        if (isSystem) {
+          return (
+            <div key={index} className={styles.systemMessage}>
+              {message}
+            </div>
+          );
+        }
 
         return (
-          <div key={i} className={`${styles.message} ${className} `}>
-            <span className={styles.user}>{user.name}</span>
-
-            <div className={styles.text}>{message}</div>
+          <div 
+            key={index} 
+            className={`${styles.message} ${isCurrentUser ? styles.currentUser : styles.otherUser}`}
+          >
+            {!isCurrentUser && (
+              <div className={styles.userInfo}>
+                <span className={styles.userName}>{user.name}</span>
+                {onlineStatus[user.id] && <span className={styles.onlineDot} />}
+              </div>
+            )}
+            <div className={styles.messageContent}>
+              <div className={styles.text}>{message}</div>
+              <div className={styles.time}>{formatTime(timestamp)}</div>
+              {isCurrentUser && (
+                <div className={styles.status}>
+                  <span>✓✓</span>
+                </div>
+              )}
+            </div>
           </div>
         );
       })}

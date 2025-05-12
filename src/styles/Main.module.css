@@ -1,143 +1,338 @@
 :root {
-  --primary: #4361ee;
-  --primary-hover: #3a56d4;
-  --text: #f8f9fa;
-  --bg-dark: #212529;
-  --input-bg: #343a40;
-  --border-radius: 12px;
+  --primary: #0088cc;
+  --primary-hover: #0077b3;
+  --text: #ffffff;
+  --bg-dark: #17212b;
+  --input-bg: #242f3d;
+  --error: #f84949;
+  --border-radius: 8px;
   --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-hover: 0 8px 15px rgba(67, 97, 238, 0.3);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .wrap {
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #1a1a2e, #16213e);
-  display: grid;
-  place-items: center;
+  background: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
+  background-image: radial-gradient(
+      circle at 10% 20%,
+      rgba(0, 136, 204, 0.1) 0%,
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(0, 136, 204, 0.1) 0%,
+      transparent 20%
+    );
+  animation: gradientShift 15s ease infinite alternate;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
 }
 
 .container {
   width: 100%;
-  max-width: 480px;
-  padding: 40px;
-  background: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(12px); /* Исправлено: вендорный префикс первым */
-  backdrop-filter: blur(12px); /* Стандартное свойство вторым */
+  max-width: 400px;
+  padding: 40px 30px;
+  background: rgba(0, 0, 0, 0.25);
   border-radius: var(--border-radius);
-  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: var(--shadow);
-  transition: var(--transition);
+  text-align: center;
+  /* Исправление для Safari: добавляем вендорный префикс */
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transform: translateY(20px);
+  opacity: 0;
+  animation: fadeInUp 0.6s cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
 }
 
-.container:hover {
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+@keyframes fadeInUp {
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .heading {
-  font-size: clamp(1.75rem, 5vw, 2.25rem);
-  line-height: 1.3;
-  text-align: center;
+  font-size: 28px;
+  margin-bottom: 10px;
   color: var(--text);
-  margin-bottom: 1.5rem;
-  background: linear-gradient(90deg, #4361ee, #3a0ca3);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+  from {
+    text-shadow: 0 0 5px rgba(0, 136, 204, 0.3);
+  }
+  to {
+    text-shadow: 0 0 15px rgba(0, 136, 204, 0.6);
+  }
+}
+
+.subtitle {
+  font-size: 14px;
+  opacity: 0.7;
+  margin-bottom: 30px;
+  animation: fadeIn 1s ease 0.3s both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  width: 100%;
+  gap: 20px;
 }
 
 .group {
-  position: relative;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  text-align: left;
+  animation: fadeIn 0.6s ease both;
+}
+
+.group:nth-child(1) {
+  animation-delay: 0.4s;
+}
+.group:nth-child(2) {
+  animation-delay: 0.5s;
+}
+.group:nth-child(3) {
+  animation-delay: 0.6s;
 }
 
 .input {
   width: 100%;
-  padding: 1rem 1.25rem;
-  font-size: 1rem;
+  padding: 12px 15px;
   background: var(--input-bg);
-  color: var(--text);
-  border: 2px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius);
-  transition: var(--transition);
+  color: var(--text);
+  font-size: 15px;
   outline: none;
+  transition: var(--transition);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 1px transparent;
+  position: relative;
 }
 
 .input:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  background: #2a3a4d;
+  border-color: rgba(0, 136, 204, 0.5);
+  box-shadow: 
+    inset 0 1px 3px rgba(0, 0, 0, 0.2),
+    0 0 0 2px rgba(0, 136, 204, 0.3),
+    0 0 15px rgba(0, 136, 204, 0.4);
+  transform: translateY(-2px);
+  animation: input-glow 1.5s infinite alternate;
 }
 
+@keyframes input-glow {
+  0% {
+    box-shadow: 
+      inset 0 1px 3px rgba(0, 0, 0, 0.2),
+      0 0 0 2px rgba(0, 136, 204, 0.3),
+      0 0 15px rgba(0, 136, 204, 0.4);
+  }
+  100% {
+    box-shadow: 
+      inset 0 1px 3px rgba(0, 0, 0, 0.2),
+      0 0 0 2px rgba(0, 136, 204, 0.4),
+      0 0 25px rgba(0, 136, 204, 0.6);
+  }
+}
+
+/* Дополнительный эффект для placeholder */
 .input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px);
+}
+
+.error {
+  font-size: 12px;
+  color: var(--error);
+  padding-left: 5px;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-3px);
+  }
+  40%,
+  80% {
+    transform: translateX(3px);
+  }
 }
 
 .button {
   width: 100%;
-  padding: 1rem;
-  font-size: 1rem;
-  font-weight: 600;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
   color: white;
-  background: linear-gradient(135deg, var(--primary), #3a0ca3);
+  background: var(--primary);
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: var(--shadow);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+  animation: pulse-glow 2s infinite;
 }
 
+/* Эффект градиентного свечения */
+.button::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  z-index: -1;
+  opacity: 0;
+}
+
+/* Эффект волны при клике */
+.button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%, -50%);
+  transform-origin: 50% 50%;
+  z-index: -1;
+}
+
+/* Анимация пульсирующего свечения */
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 10px rgba(0, 136, 204, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(0, 136, 204, 0.8);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(0, 136, 204, 0.4);
+  }
+}
+
+/* Эффекты при наведении */
 .button:hover {
-  background: linear-gradient(135deg, var(--primary-hover), #2d0a82);
+  background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: var(--shadow-hover);
+  animation: none; /* Отключаем пульсацию при наведении */
+  box-shadow: 0 7px 25px rgba(0, 136, 204, 0.6);
 }
 
+.button:hover::before {
+  opacity: 1;
+  animation: shine 1.5s infinite;
+}
+
+/* Анимация "блеска" */
+@keyframes shine {
+  0% {
+    left: -100%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.5;
+  }
+  100% {
+    left: 100%;
+    opacity: 0;
+  }
+}
+
+/* Эффект при нажатии */
 .button:active {
-  transform: translateY(0);
+  transform: translateY(1px);
+  box-shadow: 0 3px 10px rgba(0, 136, 204, 0.6);
 }
 
-/* Анимация для фокуса */
-@keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+/* Анимация волны при клике */
+.button.click-effect::after {
+  animation: button-wave 0.6s ease-out;
 }
 
-.input:focus {
-  animation: pulse 1.5s infinite;
+@keyframes button-wave {
+  0% {
+    transform: scale(1, 1) translate(-50%, -50%);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(30, 30) translate(-50%, -50%);
+    opacity: 0;
+  }
 }
 
-/* Адаптивность */
-@media (max-width: 576px) {
+@media (max-width: 480px) {
   .container {
     padding: 30px 20px;
+    animation: fadeInUpMobile 0.6s cubic-bezier(0.39, 0.575, 0.565, 1) forwards;
   }
-  
-  .input, .button {
-    padding: 0.85rem 1rem;
-  }
-}
 
-/* Дополнительные эффекты */
-.group:focus-within label {
-  transform: translateY(-50%) scale(0.85);
-  opacity: 0.8;
+  @keyframes fadeInUpMobile {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .heading {
+    font-size: 24px;
+  }
 }
