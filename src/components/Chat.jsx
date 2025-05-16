@@ -13,7 +13,7 @@ import { FaMicrophone, FaVideo, FaImage, FaFileUpload } from "react-icons/fa";
 import AudioRecorder from "./AudioRecorder";
 import VideoRecorder from "./VideoRecorder";
 
-const socket = io("http://localhost:5000", {
+const socket = io("https://socket-server-6k9g.onrender.com", {
   autoConnect: false,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
