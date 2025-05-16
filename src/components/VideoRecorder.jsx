@@ -12,14 +12,18 @@ const VideoRecorder = ({ onClose, onSave }) => {
   const timerRef = useRef(null);
 
   useEffect(() => {
+    const currentMediaRecorder = mediaRecorderRef.current;
+    const currentVideoRef = videoRef.current;
+    const currentTimer = timerRef.current;
+
     return () => {
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-        mediaRecorderRef.current.stop();
+      if (currentMediaRecorder && currentMediaRecorder.state !== 'inactive') {
+        currentMediaRecorder.stop();
       }
-      if (videoRef.current && videoRef.current.srcObject) {
-        videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+      if (currentVideoRef && currentVideoRef.srcObject) {
+        currentVideoRef.srcObject.getTracks().forEach(track => track.stop());
       }
-      clearInterval(timerRef.current);
+      clearInterval(currentTimer);
     };
   }, []);
 

@@ -3,7 +3,7 @@ import { io } from "socket.io-client";
 import { useLocation, useNavigate } from "react-router-dom";
 import EmojiPicker from "emoji-picker-react";
 import { toast } from "react-hot-toast";
-import debounce from 'lodash.debounce';
+import debounce from "lodash.debounce";
 
 import icon from "../images/emoji.svg";
 import sendIcon from "../images/send.svg";
@@ -17,7 +17,7 @@ const socket = io("https://socket-server-6k9g.onrender.com", {
   autoConnect: false,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
-  transports: ['websocket'],
+  transports: ["websocket"],
 });
 
 const Chat = () => {
@@ -42,8 +42,8 @@ const Chat = () => {
   useEffect(() => {
     const searchParams = Object.fromEntries(new URLSearchParams(search));
     if (!searchParams.name || !searchParams.room) {
-      toast.error('Invalid room parameters');
-      navigate('/');
+      toast.error("Invalid room parameters");
+      navigate("/");
       return;
     }
     setParams(searchParams);
@@ -70,7 +70,7 @@ const Chat = () => {
     if (!socket) return;
 
     const handleMessage = ({ data }) => {
-      setMessages(prev => [...prev, data]);
+      setMessages((prev) => [...prev, data]);
     };
 
     const handleHistory = ({ data }) => {
@@ -83,19 +83,20 @@ const Chat = () => {
 
     const handleTyping = ({ userId, name, isTyping }) => {
       if (userId !== socket.id) {
-        setTypingUsers(prev => isTyping 
-          ? [...prev.filter(u => u.id !== userId), { id: userId, name }]
-          : prev.filter(u => u.id !== userId)
+        setTypingUsers((prev) =>
+          isTyping
+            ? [...prev.filter((u) => u.id !== userId), { id: userId, name }]
+            : prev.filter((u) => u.id !== userId)
         );
       }
     };
 
     const handleUserStatus = ({ userId, isOnline }) => {
-      setOnlineStatus(prev => ({ ...prev, [userId]: isOnline }));
+      setOnlineStatus((prev) => ({ ...prev, [userId]: isOnline }));
     };
 
     const handleError = ({ message }) => {
-      toast.error(message || 'An error occurred');
+      toast.error(message || "An error occurred");
       navigate("/");
     };
 
@@ -122,129 +123,145 @@ const Chat = () => {
   }, [messages]);
 
   // Обработка набора текста с debounce
-  const handleTypingEvent = useCallback(debounce(() => {
-    socket.emit("typing", {
-      room: params.room,
-      isTyping: false,
-    });
-  }, 2000), [params.room]);
+  const handleTypingEvent = useCallback(
+    debounce(() => {
+      socket.emit("typing", {
+        room: params.room,
+        isTyping: false,
+      });
+    }, 2000),
+    [params.room, socket]
+  );
 
-  const handleChange = useCallback(({ target: { value } }) => {
-    setMessage(value);
+  const handleChange = useCallback(
+    ({ target: { value } }) => {
+      setMessage(value);
 
-    if (typingTimeoutRef.current) {
-      clearTimeout(typingTimeoutRef.current);
-    }
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
 
-    socket.emit("typing", {
-      room: params.room,
-      isTyping: true,
-    });
+      socket.emit("typing", {
+        room: params.room,
+        isTyping: true,
+      });
 
-    handleTypingEvent();
-  }, [params.room, handleTypingEvent]);
+      handleTypingEvent();
+    },
+    [params.room, handleTypingEvent, socket]
+  );
 
   const handleFileUpload = useCallback(async (e) => {
     const selectedFile = e.target.files[0];
     if (!selectedFile) return;
 
     if (selectedFile.size > 50 * 1024 * 1024) {
-      toast.error('File size exceeds 50MB limit');
+      toast.error("File size exceeds 50MB limit");
       return;
     }
 
     const formData = new FormData();
-    formData.append('file', selectedFile);
+    formData.append("file", selectedFile);
 
     setIsUploading(true);
     try {
-      const response = await fetch('https://socket-server-6k9g.onrender.com/upload', {
-        method: 'POST',
-        body: formData
-      });
-      
-      if (!response.ok) throw new Error('Upload failed');
-      
+      const response = await fetch(
+        "https://socket-server-6k9g.onrender.com/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) throw new Error("Upload failed");
+
       const data = await response.json();
       setFile({
         url: data.url,
-        type: data.type
+        type: data.type,
       });
-      
-      if (data.type === 'image') {
+
+      if (data.type === "image") {
         const reader = new FileReader();
         reader.onload = (e) => setFilePreview(e.target.result);
         reader.readAsDataURL(selectedFile);
       }
     } catch (error) {
-      toast.error(error.message || 'File upload failed');
+      toast.error(error.message || "File upload failed");
     } finally {
       setIsUploading(false);
     }
   }, []);
 
-  const handleSubmit = useCallback(async (e) => {
-  e.preventDefault();
-  
-  // Проверяем, есть ли что отправить
-  if (!message.trim() && !file) {
-    toast.error('Message cannot be empty');
-    return;
-  }
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-  // Проверяем подключение сокета
-  if (!socket.connected) {
-    toast.error('Connection lost. Reconnecting...');
-    try {
-      await new Promise((resolve) => {
-        socket.connect();
-        socket.once('connect', resolve);
-      });
-    } catch (err) {
-      toast.error('Failed to reconnect');
-      return;
-    }
-  }
-
-  try {
-    // Отправляем сообщение
-    socket.emit("sendMessage", { 
-      message: message.trim(), 
-      params,
-      file
-    }, (ack) => {
-      if (ack?.error) {
-        toast.error(ack.error);
-      } else {
-        // Очищаем поля только после успешной отправки
-        setMessage("");
-        setFile(null);
-        setFilePreview(null);
+      // Проверяем, есть ли что отправить
+      if (!message.trim() && !file) {
+        toast.error("Message cannot be empty");
+        return;
       }
-    });
-  } catch (error) {
-    toast.error('Failed to send message');
-    console.error('Send message error:', error);
-  }
-}, [message, file, params]);
+
+      // Проверяем подключение сокета
+      if (!socket.connected) {
+        toast.error("Connection lost. Reconnecting...");
+        try {
+          await new Promise((resolve) => {
+            socket.connect();
+            socket.once("connect", resolve);
+          });
+        } catch (err) {
+          toast.error("Failed to reconnect");
+          return;
+        }
+      }
+
+      try {
+        // Отправляем сообщение
+        socket.emit(
+          "sendMessage",
+          {
+            message: message.trim(),
+            params,
+            file,
+          },
+          (ack) => {
+            if (ack?.error) {
+              toast.error(ack.error);
+            } else {
+              // Очищаем поля только после успешной отправки
+              setMessage("");
+              setFile(null);
+              setFilePreview(null);
+            }
+          }
+        );
+      } catch (error) {
+        toast.error("Failed to send message");
+        console.error("Send message error:", error);
+      }
+    },
+    [message, file, params, socket]
+  );
 
   const onEmojiClick = useCallback((emoji) => {
-    setMessage(prev => prev + emoji.emoji);
+    setMessage((prev) => prev + emoji.emoji);
   }, []);
 
   const leaveRoom = useCallback(() => {
     socket.emit("leaveRoom", { params });
     navigate("/");
-  }, [navigate, params]);
+  }, [navigate, params, socket]);
 
   const handleSaveAudio = useCallback((audioBlob) => {
     // Реализация сохранения аудио
-    console.log('Audio blob:', audioBlob);
+    console.log("Audio blob:", audioBlob);
   }, []);
 
   const handleSaveVideo = useCallback((videoBlob) => {
     // Реализация сохранения видео
-    console.log('Video blob:', videoBlob);
+    console.log("Video blob:", videoBlob);
   }, []);
 
   return (
@@ -254,7 +271,11 @@ const Chat = () => {
           {params.room}
           <span className={styles.usersCount}>{users.length} members</span>
         </div>
-        <button className={styles.left} onClick={leaveRoom} aria-label="Leave room">
+        <button
+          className={styles.left}
+          onClick={leaveRoom}
+          aria-label="Leave room"
+        >
           Leave
         </button>
       </header>
@@ -280,35 +301,35 @@ const Chat = () => {
         <div className={styles.mediaButtons}>
           <label className={styles.mediaButton} aria-label="Upload image">
             <FaImage />
-            <input 
-              type="file" 
-              accept="image/*" 
+            <input
+              type="file"
+              accept="image/*"
               onChange={handleFileUpload}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
           </label>
-          
+
           <label className={styles.mediaButton} aria-label="Upload file">
             <FaFileUpload />
-            <input 
-              type="file" 
-              accept="*" 
+            <input
+              type="file"
+              accept="*"
               onChange={handleFileUpload}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
           </label>
-          
-          <button 
-            type="button" 
+
+          <button
+            type="button"
             className={styles.mediaButton}
             onClick={() => setIsRecordingAudio(true)}
             aria-label="Record audio"
           >
             <FaMicrophone />
           </button>
-          
-          <button 
-            type="button" 
+
+          <button
+            type="button"
             className={styles.mediaButton}
             onClick={() => setIsRecordingVideo(true)}
             aria-label="Record video"
@@ -320,7 +341,7 @@ const Chat = () => {
         {filePreview && (
           <div className={styles.filePreview}>
             <img src={filePreview} alt="Preview" />
-            <button 
+            <button
               onClick={() => {
                 setFilePreview(null);
                 setFile(null);
@@ -335,10 +356,7 @@ const Chat = () => {
         {file && !filePreview && (
           <div className={styles.fileInfo}>
             {file.type} file attached
-            <button 
-              onClick={() => setFile(null)}
-              aria-label="Remove file"
-            >
+            <button onClick={() => setFile(null)} aria-label="Remove file">
               ×
             </button>
           </div>
@@ -382,8 +400,8 @@ const Chat = () => {
             className={styles.input}
             aria-label="Message input"
           />
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className={styles.sendButton}
             aria-label="Send message"
             disabled={!message.trim() && !file}
@@ -394,14 +412,14 @@ const Chat = () => {
       </form>
 
       {isRecordingAudio && (
-        <AudioRecorder 
+        <AudioRecorder
           onClose={() => setIsRecordingAudio(false)}
           onSave={handleSaveAudio}
         />
       )}
 
       {isRecordingVideo && (
-        <VideoRecorder 
+        <VideoRecorder
           onClose={() => setIsRecordingVideo(false)}
           onSave={handleSaveVideo}
         />
