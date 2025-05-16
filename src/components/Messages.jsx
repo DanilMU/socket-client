@@ -57,7 +57,7 @@ const Messages = ({ messages, currentUserId, onlineStatus }) => {
   const renderFilePreview = (file) => {
     if (!file || !file.url) return null;
     
-    const fileUrl = `http://localhost:5000${file.url}`;
+    const fileUrl = `https://socket-server-6k9g.onrender.com${file.url}`;
     
     switch(file.type) {
       case 'image':
