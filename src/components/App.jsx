@@ -5,11 +5,20 @@ import "../styles/main.css";
 
 const App = () => {
   return (
-    <div className="container">
-      <Toaster position="top-right" />
+    <div className="container" role="main">
+      <Toaster 
+        position="top-right" 
+        toastOptions={{
+          duration: 4000,
+          ariaProps: {
+            role: 'status',
+            'aria-live': 'polite',
+          },
+        }} 
+      />
       <AppRoutes />
     </div>
   );
 };
 
-export default App;
+export default React.memo(App);

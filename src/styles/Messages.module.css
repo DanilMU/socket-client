@@ -262,4 +262,43 @@
   :root {
     --glow-intensity: 0.4;
   }
+
+  .filePreview {
+  max-width: 300px;
+  margin: 8px 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.filePreview img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.audioMessage,
+.videoMessage {
+  margin: 8px 0;
+  width: 100%;
+}
+
+.audioMessage audio,
+.videoMessage video {
+  width: 100%;
+}
+
+.fileMessage a {
+  color: var(--primary);
+  text-decoration: none;
+  padding: 6px 12px;
+  background: rgba(0, 136, 204, 0.1);
+  border-radius: 16px;
+  display: inline-block;
+  margin: 8px 0;
+}
+
+.fileMessage a:hover {
+  background: rgba(0, 136, 204, 0.2);
+}
+
 }

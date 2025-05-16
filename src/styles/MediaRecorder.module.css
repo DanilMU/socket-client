@@ -1,0 +1,145 @@
+.recorderOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  /* Добавляем вендорные префиксы для backdrop-filter */
+  -webkit-backdrop-filter: blur(5px); /* Для Safari */
+  backdrop-filter: blur(5px);
+}
+
+.recorderContainer {
+  background: #1e2c3a;
+  border-radius: 12px;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: white;
+}
+
+.timer {
+  font-size: 24px;
+  text-align: center;
+  margin: 15px 0;
+  font-family: monospace;
+}
+
+.placeholder {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.controls {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.recordButton, 
+.stopButton, 
+.saveButton, 
+.retryButton, 
+.closeButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  /* Добавляем префиксы для transition */
+  -webkit-transition: all 0.2s;
+}
+
+.recordButton {
+  background: #f44336;
+  color: white;
+}
+
+.stopButton {
+  background: #ff9800;
+  color: white;
+}
+
+.saveButton {
+  background: #4caf50;
+  color: white;
+}
+
+.retryButton {
+  background: #2196f3;
+  color: white;
+}
+
+.closeButton {
+  background: #607d8b;
+  color: white;
+}
+
+.audioPreview, 
+.videoPreview {
+  width: 100%;
+  margin: 10px 0;
+  border-radius: 8px;
+  /* Добавляем префиксы для border-radius */
+  -webkit-border-radius: 8px;
+}
+
+.videoContainer {
+  position: relative;
+  width: 100%;
+  margin: 10px 0;
+}
+
+.videoLive {
+  width: 100%;
+  background: #000;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+}
+
+.videoOff {
+  width: 100%;
+  background: #333;
+  border-radius: 8px;
+  -webkit-border-radius: 8px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #777;
+  /* Добавляем префиксы для flexbox */
+  display: -webkit-flex;
+  -webkit-align-items: center;
+  -webkit-justify-content: center;
+}
+
+/* Добавляем дополнительные стили для лучшей поддержки в Safari */
+@supports (-webkit-touch-callout: none) {
+  .recorderOverlay {
+    background: rgba(0, 0, 0, 0.7); /* Немного светлее для Safari */
+  }
+  
+  .recorderContainer {
+    -webkit-transform: translateZ(0); /* Улучшаем рендеринг в Safari */
+  }
+  
+  .recordButton,
+  .stopButton,
+  .saveButton,
+  .retryButton,
+  .closeButton {
+    -webkit-appearance: none; /* Убираем стандартные стили кнопок в Safari */
+  }
+}
