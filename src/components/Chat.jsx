@@ -123,15 +123,26 @@ const Chat = () => {
   }, [messages]);
 
   // Обработка набора текста с debounce
-  const handleTypingEvent = useCallback(
-    debounce(() => {
-      socket.emit("typing", {
-        room: params.room,
-        isTyping: false,
-      });
-    }, 2000),
-    [params.room, socket]
-  );
+  const typingDebounceRef = useRef();
+
+const handleTypingEvent = useCallback(() => {
+  typingDebounceRef.current = debounce(() => {
+    socket.emit("typing", {
+      room: params.room,
+      isTyping: false,
+    });
+  }, 2000);
+  
+  return typingDebounceRef.current;
+}, [params.room]);
+
+useEffect(() => {
+  return () => {
+    if (typingDebounceRef.current) {
+      typingDebounceRef.current.cancel();
+    }
+  };
+}, []);
 
   const handleChange = useCallback(
     ({ target: { value } }) => {
@@ -148,7 +159,7 @@ const Chat = () => {
 
       handleTypingEvent();
     },
-    [params.room, handleTypingEvent, socket]
+    [params.room, handleTypingEvent]
   );
 
   const handleFileUpload = useCallback(async (e) => {
@@ -242,7 +253,7 @@ const Chat = () => {
         console.error("Send message error:", error);
       }
     },
-    [message, file, params, socket]
+    [message, file, params]
   );
 
   const onEmojiClick = useCallback((emoji) => {
@@ -252,7 +263,7 @@ const Chat = () => {
   const leaveRoom = useCallback(() => {
     socket.emit("leaveRoom", { params });
     navigate("/");
-  }, [navigate, params, socket]);
+  }, [navigate, params]);
 
   const handleSaveAudio = useCallback((audioBlob) => {
     // Реализация сохранения аудио
